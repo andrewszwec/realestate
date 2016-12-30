@@ -10,6 +10,7 @@ from sklearn.model_selection import StratifiedKFold
 import sklearn.preprocessing as pp
 from sklearn.pipeline import Pipeline
 from sklearn.model_selection import train_test_split
+from sklearn import linear_model
 
 ## Make some helper functions
 def rmse(predictions, targets):
@@ -73,7 +74,6 @@ X_train, X_test, y_train, y_test = train_test_split(featureMatrix, y, test_size=
 
 
 ## Lasso model
-from sklearn import linear_model
 reg = linear_model.Lasso(alpha = 0.1)
 # Fit model
 reg.fit(X_train, y_train)
@@ -86,6 +86,7 @@ results= pd.DataFrame({'prediction':prediction, 'observation':y_test.astype('flo
 results.head(10)
 
 rmse( results.prediction, results.observation )
+#46089.00493046904
 
 # Score some data for kaggle submission
 prediction = reg.predict(featureMatrix_sub)
@@ -111,22 +112,32 @@ seed=5673
 np.random.seed(seed)
 
 model = KerasRegressor(build_fn=myModel, nb_epoch=200, batch_size=10, verbose=2)
+
+## Dont know how to get the model out of this for scoring
 # evaluate using 10-fold cross validation
-kfold = StratifiedKFold(n_splits=10, shuffle=True, random_state=seed)
-results = cross_val_score(model, X_train, y_train, cv=kfold)
-
-print(results.mean())
-
-
-
+#kfold = StratifiedKFold(n_splits=10, shuffle=True, random_state=seed)
+#results = cross_val_score(model, X_train, y_train, cv=kfold)
+#print(results.mean())
 
 # Fit model
 model.fit(X_train, y_train)
 
 # Predict model
 prediction = model.predict(X_test)
-
 pd.DataFrame(prediction, y_test).head(5)
+
+res= pd.DataFrame({'prediction':prediction, 'observation':y_test.astype('float')})
+
+rmse( res.prediction, res.observation )
+# 68762.474618915265 worse than Lasso
+
+# Score some data for kaggle submission
+pred = model.predict(featureMatrix_sub)
+
+# Output Scores to CSV
+pred_df = pd.DataFrame(pred, index=submission["Id"], columns=["SalePrice"])
+pred_df.to_csv('/home/andrew/Documents/kaggle/realestate/python/output_NN.csv', header=True, index_label='Id')
+
 
 
 
