@@ -18,8 +18,8 @@ def rmse(predictions, targets):
 
 
 # load dataset
-dataframe = pd.read_csv("/home/andrew/Documents/kaggle/realestate/train.csv")
-submission = pd.read_csv("/home/andrew/Documents/kaggle/realestate/test.csv")
+dataframe = pd.read_csv("/Users/andrew/Documents/kaggle/realestate/data/train.csv")
+submission = pd.read_csv("/Users/andrew/Documents/kaggle/realestate/data/test.csv")
 
 
 ## Deal with Training Set
@@ -93,8 +93,11 @@ prediction = reg.predict(featureMatrix_sub)
 
 # Output Scores to CSV
 pred_df = pd.DataFrame(prediction, index=submission["Id"], columns=["SalePrice"])
-pred_df.to_csv('/home/andrew/Documents/kaggle/realestate/output.csv', header=True, index_label='Id')
+pred_df.to_csv('/Users/andrew/Documents/kaggle/realestate/python/output.csv', header=True, index_label='Id')
 
+# Get current working dir
+#import os
+#cwd = os.getcwd()
 
 # Make a keras model
 def myModel():
@@ -130,13 +133,14 @@ res= pd.DataFrame({'prediction':prediction, 'observation':y_test.astype('float')
 
 rmse( res.prediction, res.observation )
 # 68762.474618915265 worse than Lasso
+# 50298.281266839957 MAC
 
 # Score some data for kaggle submission
 pred = model.predict(featureMatrix_sub)
 
 # Output Scores to CSV
 pred_df = pd.DataFrame(pred, index=submission["Id"], columns=["SalePrice"])
-pred_df.to_csv('/home/andrew/Documents/kaggle/realestate/python/output_NN.csv', header=True, index_label='Id')
+pred_df.to_csv('/Users/andrew/Documents/kaggle/realestate/python/output_NN.csv', header=True, index_label='Id')
 
 
 
